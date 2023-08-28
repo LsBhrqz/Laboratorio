@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int ma(){
+int main(){
     int n;
     cout << "Ingrese N: ";
     cin >> n;
