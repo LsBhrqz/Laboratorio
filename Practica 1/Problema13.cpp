@@ -3,7 +3,7 @@ using namespace std;
 bool esprimo(int numero);
 int main()
 {
-    int numero=0, rfinal=0, val=0;
+    int numero=0, rfinal=0; bool val=0;
     cout<<"Ingrese un numero: "; cin>>numero;
     for(int i=2; i<numero ;i++){
         val=esprimo(i);
@@ -31,3 +31,4 @@ bool esprimo(int numero){
         }
     }
 }
+
