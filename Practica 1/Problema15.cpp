@@ -1,6 +1,5 @@
 #include <iostream>
 using namespace std;
-bool esprimo(int numero);
 int main()
 {
     int numero=0, rfinal=0, constante=2, inicio=1, suma=1;
