@@ -1,17 +1,23 @@
 #include <iostream>
-#include <string.h>
 
 using namespace std;
 
 int tamañoNumero(int numero);
+void llenarCadena(char arreglo[], int numero, int Tamaño);
 
 int main()
 {
     int numero; int nDigitos=0;
-    cout<<"Ingrese un numero"; cin>>numero;
+    cout<<"Ingrese un numero: "; cin>>numero;
     nDigitos=tamañoNumero(numero);
-    cout<<nDigitos;
-
+    char arreglo[nDigitos];
+    cout<<char(1)<<endl;
+    llenarCadena(arreglo, numero, nDigitos);
+    cout<<"'";
+    for(int i=0;i<nDigitos; i++){
+        cout<<arreglo[i];
+    }
+    cout<<"'";
 }
 
 int tamañoNumero(int numero){
@@ -25,4 +31,11 @@ int tamañoNumero(int numero){
         }
     }
     return digitos;
+}
+
+void llenarCadena(char arreglo[], int numero, int Tamaño){
+    for(int i=-1; i>=-Tamaño; i--){
+        arreglo[i]= char(numero%10);
+        numero/=10;
+    }
 }
