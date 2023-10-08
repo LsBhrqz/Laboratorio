@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 
 using namespace std;
 
@@ -39,3 +39,4 @@ void llenarCadena(char arreglo[], int numero, int Tamaño){
         numero/=10;
     }
 }
+*/
