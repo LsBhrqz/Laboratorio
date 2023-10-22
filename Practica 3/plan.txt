@@ -1,0 +1,10 @@
+1. Verificar administrador
+	1. Crear usuarios (3 datos)
+		Cédula
+		Clave
+		Saldo
+2. Como usuario: pedir cédula y clave
+	Consultar saldo
+	Retirar dinero
+Si retira o consulta se le cobran mil pesos
+Actualizar saldo

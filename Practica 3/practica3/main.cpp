@@ -1,35 +1,13 @@
-#include <iostream>
-#include "practica3.h"
+#include "Menu.h"
+
 using namespace std;
 
 int main()
 {
-    bool inicio= true;
     bool bandera= false;
-    char respuesta=' ';
+    string nombre_del_archivo= "sumo.txt";
 
-    while(inicio){
-        cout <<"\nVerficacion de los archivos del sistema...\n"<<endl;
-        bandera= comprobarLectura();
-        if(bandera){
-            inicio= false;
-        }else{
-            cout << "\nDesea salir del programa? (Ingrese s(si) o n(no)): "; cin >> respuesta;
-            switch(respuesta){
-            case 's':
-                inicio=false;
-                break;
-            case 'n':
-                break;
-
-            default:
-                cout << "\nIngresaste una opcion invalida" <<endl;
-            }
-            cin.clear();
-            cin.ignore(255, '\n');
-        }
-    }
-
+    ComprobacionDeArchivo(nombre_del_archivo, bandera);
 
     while(bandera){
         int eleccion_menu_ingreso=0;
@@ -45,8 +23,9 @@ int main()
                 throw 2;
             }else if(eleccion_menu_ingreso==1){
                 cout << "Ingrese la contraseña"<<endl;
-                verificacionAdministrador();
+                if(verificacionAdministrador()){
 
+                }
             }else if(eleccion_menu_ingreso==2){
                 cout << "respuesta 2"<<endl;
             }else if(eleccion_menu_ingreso==3){

@@ -7,4 +7,5 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
-    practica3.h
+    Menu.h \
+    codificaciones.h
