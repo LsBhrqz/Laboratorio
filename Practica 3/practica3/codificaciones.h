@@ -70,7 +70,7 @@ void decodificarM1(string cadena, int n){
 
 //Esta función decodifica bajo el método dos
 string decodificarM2(string cadena, int n){
-    int longitud = cadena.length() - 1;
+    int longitud = cadena.length();
     string resultado = "";
 
     for (int i = 0; i < longitud; i += n){
@@ -95,7 +95,7 @@ string decodificarM2(string cadena, int n){
 añadiendolo al string que representa esa cadena de bits*/
 string convBinInt(string linea){
     string recibido = "";
-    int len = linea.length() - 1; //hay que restarle uno a cada str
+    int len = linea.length(); //hay que restarle uno a cada str
     int residuo = len % 8;
     for(int i = 0; i < (len - residuo); i += 8){
         string sublinea = "";
@@ -173,8 +173,6 @@ string codificarM2(string &cadena, int n){
         resultado += grupo;
     }
 
-    resultado += "1";
-
     cout << "La contraseña codificada es: " << resultado << endl;
 
     return resultado;
@@ -209,5 +207,14 @@ void codificarM1(string &cadena, int n){
 
     decodificarM1(resultado, n);
 
+}
+
+string quitarCeros(string linea){
+    string sincero = "";
+    int tam = (linea.length()) % 8;
+    int todo = linea.length() - tam;
+    sincero = linea.substr(0,todo);
+
+    return sincero;
 }
 #endif // CODIFICACIONES_H
