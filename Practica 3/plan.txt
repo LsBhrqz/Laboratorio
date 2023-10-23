@@ -8,3 +8,5 @@
 	Retirar dinero
 Si retira o consulta se le cobran mil pesos
 Actualizar saldo
+
+Validaciones de la semilla de codificacion
