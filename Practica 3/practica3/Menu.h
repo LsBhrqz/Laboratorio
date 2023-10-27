@@ -189,7 +189,7 @@ bool cedulaRepetida(string nombre_del_archivo, string cedula_a_verificar){
     return false;
 }
 
-void CrearUsuario(string nombre_archivo, int& semilla, vector<int>, int& longitd_clave, int& longitud_saldo){
+void CrearUsuario(string nombre_archivo, int& semilla, vector<int>& longitud_cedula, vector<int>& longitd_clave, vector<int>& longitud_saldo){
     ofstream archivo;
     string linea;
     long long int numero;
@@ -205,7 +205,7 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>, int& longitd
                     }else{
                         string version_string= to_string(numero);
                         int longitud = version_string.length();
-                        longitud_cedula= longitud;
+                        longitud_cedula.push_back(longitud);
                         string lineaBina= "";
                         for (int i = 0; i < longitud; i++) {
                             char aux[9];
@@ -234,7 +234,7 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>, int& longitd
         }else if(i==1){
             cout <<"Ingrese la clave: "; cin >> linea;
             int longitud = linea.length();
-            longitd_clave= longitud;
+            longitd_clave.push_back(longitud);
             string lineaBina= "";
             for (int i = 0; i < longitud; i++) {
                 char aux[9];
@@ -254,7 +254,7 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>, int& longitd
                     }else{
                         string version_string_saldo= to_string(numero);
                         int longitud = version_string_saldo.length();
-                        longitud_saldo=longitud;
+                        longitud_saldo.push_back(longitud);
                         string lineaBina= "";
                         for (int i = 0; i < longitud; i++) {
                             char aux[9];
@@ -305,23 +305,25 @@ string ValidarCedula_o_Saldo(string nombre){
 }
 
 
-bool ValidacionUsuario(string nombre_del_archivo, int semilla, int& numero_de_linea_cedula, int longitud){
+bool ValidacionUsuario(string nombre_del_archivo, int semilla, int& numero_de_linea_cedula, vector<int>longitud, int& contador){
     string cedula;
     cedula= ValidarCedula_o_Saldo("la cedula");
     string linea;
     ifstream archivo;
     archivo.open(nombre_del_archivo);
     int numero_lineas_del_archivo= NumeroLineasArchivo(nombre_del_archivo);
+    contador=0;
     for(int numero_linea_actual=1; numero_linea_actual<numero_lineas_del_archivo; numero_linea_actual+=3){
         linea= leerUnaLinea(numero_linea_actual, nombre_del_archivo);
         linea= decodificarM2(linea, semilla);
-        linea= quitarCeros(linea, longitud);
+        linea= quitarCeros(linea, longitud[contador]);
         linea= convBinInt(linea);
         if(linea==cedula){
             numero_de_linea_cedula=numero_linea_actual;
             archivo.close();
             return true;
         }
+        contador+=1;
     }
     archivo.close();
     return false;
@@ -365,15 +367,18 @@ string EncriptarNuevosValores(int valor, int semilla){
         convIntBin(aux, version_string_saldo[i]);
         lineaBina+= aux;
     }
+    lineaBina= ponerCeros(lineaBina, semilla);
     version_string_saldo= codificarM2(lineaBina, semilla);
     return version_string_saldo;
 }
 
-void ActualizarSaldo(int valorSaldo, string nombreArchivo, int linea_a_cambiar, int semilla){
+void ActualizarSaldo(int valorSaldo, string nombreArchivo, int linea_a_cambiar, int semilla, vector<int>&vectorsaldo, int posicion){
 
     ifstream archivo_lectura(nombreArchivo);
     ofstream archivo_escritura("temp.txt");
-
+    string versionstring= to_string(valorSaldo);
+    int longitud= versionstring.length();
+    vectorsaldo[posicion]= longitud;
     string linea;
     int contador=0;
     string nueva_linea= EncriptarNuevosValores(valorSaldo, semilla);

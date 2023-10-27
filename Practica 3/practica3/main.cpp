@@ -7,12 +7,10 @@ int main()
     bool bandera= false;
     string nombre_del_archivo= "sumo.txt";
     int semilla_De_codificacion=4; int longitud=4;
-    vector <int> longitudes_nombres_usuarios;
-    vector <int> longitudes_nombres_usuarios;
-    vector <int> longitudes_nombres_usuarios;
-    int longitud_clave_usuario=4;
-    int longitud_usuario=4;
-    int longitud_saldo=4;
+    vector <int> longitudes_cedula_usuarios={};
+    vector <int> longitudes_claves_usuarios={};
+    vector <int> longitudes_saldos_usuarios={};
+    int posicion_archivo_usuario=0;
 
     ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion, longitud);
 
@@ -54,7 +52,7 @@ int main()
                                 switch(respuesta_menu_admin){
                                 case '1':{
                                     cout<<"\nCreando usuario..."<<endl;
-                                    CrearUsuario(nombre_del_archivo, semilla_De_codificacion, longitud_usuario, longitud_clave_usuario, longitud_saldo);
+                                    CrearUsuario(nombre_del_archivo, semilla_De_codificacion, longitudes_cedula_usuarios, longitudes_claves_usuarios, longitudes_saldos_usuarios);
                                 }
                                 break;
                                 case '2':
@@ -82,14 +80,14 @@ int main()
 
 
                 while(bandera_validacion_usuario){
-                    if(ValidacionUsuario(nombre_del_archivo, semilla_De_codificacion, numero_de_linea_principal, longitud_usuario)){
+                    if(ValidacionUsuario(nombre_del_archivo, semilla_De_codificacion, numero_de_linea_principal, longitudes_cedula_usuarios, posicion_archivo_usuario)){
                         bool validacion_clave_usuario=true;
                         while(validacion_clave_usuario){
                             string clave;
                             cout<<"Ingrese la clave: ";cin >> clave;
                             string clave_guardada= leerUnaLinea(numero_de_linea_principal+1, nombre_del_archivo);
                             clave_guardada= decodificarM2(clave_guardada, semilla_De_codificacion);
-                            clave_guardada= quitarCeros(clave_guardada, longitud_clave_usuario);
+                            clave_guardada= quitarCeros(clave_guardada, longitudes_claves_usuarios[posicion_archivo_usuario]);
                             clave_guardada= convBinInt(clave_guardada);
                             if(clave==clave_guardada){
                                 bandera_repetir_menu_usuario= true;;
@@ -146,13 +144,12 @@ int main()
                         switch(respuesta_menu_usuario){
                         case '1':{
                             int valorsaldo=0;
-                            bool verificacion_saldo= VerificarSaldo(valorsaldo, numero_de_linea_principal+2, nombre_del_archivo, semilla_De_codificacion, longitud_saldo);
-
+                            bool verificacion_saldo= VerificarSaldo(valorsaldo, numero_de_linea_principal+2, nombre_del_archivo, semilla_De_codificacion, longitudes_saldos_usuarios[posicion_archivo_usuario]);
                             if(verificacion_saldo){
                                 cout << "\nSu saldo es de: " << valorsaldo << " pesos\n" <<endl;
                                 cout <<"Se le cobraran 1000 pesos por consultar su saldo\n"<<endl;
                                 valorsaldo-= 1000;
-                                ActualizarSaldo(valorsaldo, nombre_del_archivo, numero_de_linea_principal+2, semilla_De_codificacion);
+                                ActualizarSaldo(valorsaldo, nombre_del_archivo, numero_de_linea_principal+2, semilla_De_codificacion, longitudes_saldos_usuarios, posicion_archivo_usuario);
                             }else{
                                 cout<<"Tiene menos de mil pesos, por lo tanto no puede consultar su saldo"<<endl;
                             }
