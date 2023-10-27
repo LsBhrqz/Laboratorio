@@ -1,6 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
-
+#include <vector>
 #include "codificaciones.h"
 #include <string>
 
@@ -23,6 +23,7 @@ bool comprobarLectura( string nombredelarchivo){
         cerr << "No se puede abrir el archivo. No se encuentra." << endl;
         return false;
     }else{
+        archivo.close();
         cout << "Verificacion exitosa" <<endl;
         return true;
     }
@@ -41,12 +42,26 @@ string leerUnaLinea(int numero_linea_deseada, string nombreArchivo){
         numero_linea_actual++;
     }
 }
+string ponerCeros(string lineaBinString, int n){
+    if(lineaBinString.length() < n){
+        for(int x = lineaBinString.length(); x < n ; x++)
+            lineaBinString += "0";
+    }
 
-bool verificacionAdministrador(string nombreArchivo, int semilla_de_codificacion){
+    if((lineaBinString.length() % n) != 0){
+        for(int x = (lineaBinString.length()%n); x < n ; x++)
+            lineaBinString += "0";
+    }
+    return lineaBinString;
+}
+
+
+bool verificacionAdministrador(string nombreArchivo, int semilla_de_codificacion, int longitud){
     string contraseña_ingresada =" ";
     string contraseña_guardada= leerUnaLinea(0, nombreArchivo);
     cin >> contraseña_ingresada;
     contraseña_guardada= decodificarM2(contraseña_guardada, semilla_de_codificacion);
+    contraseña_guardada= quitarCeros(contraseña_guardada, longitud);
     contraseña_guardada= convBinInt(contraseña_guardada);
     if(contraseña_guardada==contraseña_ingresada){
         return true;
@@ -62,13 +77,13 @@ void EscribirContraseñasobreArchivo(string line, string nombreArchivo){
     archivo.close();
 }
 
-string CrearArhcivo(int& n){
+string CrearArhcivo(int& n, int &longitud){
     //Primera parte: Pedir una contraseña para el administrados y encriptarla
     string nombre_nuevo_archivo= "Nuevo archivo.txt";
     string lecturaConsola = "";
     cout << "Ingrese la clave del administrador: " << endl;
     cin >> lecturaConsola;
-    int longitud = lecturaConsola.length();
+    longitud = lecturaConsola.length();
 
     string lineaBin= "";
 
@@ -104,7 +119,7 @@ string CrearArhcivo(int& n){
     return nombre_nuevo_archivo;
 }
 
-void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semilla){
+void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semilla, int& longitud){
     bool inicio= true;
     char respuesta= ' ';
     string verificar_tamaño= "";
@@ -123,7 +138,7 @@ void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semil
                 respuesta= verificar_tamaño[0];
                 switch(respuesta){
                 case 's':
-                    nombre_del_archivo = CrearArhcivo(semilla);
+                    nombre_del_archivo = CrearArhcivo(semilla, longitud);
                     break;
                 case 'n':
                 {
@@ -174,7 +189,7 @@ bool cedulaRepetida(string nombre_del_archivo, string cedula_a_verificar){
     return false;
 }
 
-void CrearUsuario(string nombre_archivo, int semilla){
+void CrearUsuario(string nombre_archivo, int& semilla, vector<int>, int& longitd_clave, int& longitud_saldo){
     ofstream archivo;
     string linea;
     long long int numero;
@@ -190,13 +205,16 @@ void CrearUsuario(string nombre_archivo, int semilla){
                     }else{
                         string version_string= to_string(numero);
                         int longitud = version_string.length();
+                        longitud_cedula= longitud;
                         string lineaBina= "";
                         for (int i = 0; i < longitud; i++) {
                             char aux[9];
                             convIntBin(aux, version_string[i]);
                             lineaBina+= aux;
                         }
-                        version_string= codificarM2(lineaBina, semilla);
+
+                        version_string= ponerCeros(lineaBina, semilla);
+                        version_string= codificarM2(version_string, semilla);
                         if(cedulaRepetida(nombre_archivo, version_string)){
                             cout << "No se puede agregar esta cedula porque ya existe en el archivo" <<endl;
                         }else{
@@ -216,12 +234,14 @@ void CrearUsuario(string nombre_archivo, int semilla){
         }else if(i==1){
             cout <<"Ingrese la clave: "; cin >> linea;
             int longitud = linea.length();
+            longitd_clave= longitud;
             string lineaBina= "";
             for (int i = 0; i < longitud; i++) {
                 char aux[9];
                 convIntBin(aux, linea[i]);
                 lineaBina+= aux;
             }
+            lineaBina= ponerCeros(lineaBina, semilla);
             linea= codificarM2(lineaBina, semilla);
             archivo << linea<< endl;
         }else{
@@ -234,12 +254,14 @@ void CrearUsuario(string nombre_archivo, int semilla){
                     }else{
                         string version_string_saldo= to_string(numero);
                         int longitud = version_string_saldo.length();
+                        longitud_saldo=longitud;
                         string lineaBina= "";
                         for (int i = 0; i < longitud; i++) {
                             char aux[9];
                             convIntBin(aux, version_string_saldo[i]);
                             lineaBina+= aux;
                         }
+                        lineaBina= ponerCeros(lineaBina, semilla);
                         version_string_saldo= codificarM2(lineaBina, semilla);
                         archivo << version_string_saldo<< endl;
                         bandera2=false;
@@ -283,7 +305,7 @@ string ValidarCedula_o_Saldo(string nombre){
 }
 
 
-bool ValidacionUsuario(string nombre_del_archivo, int semilla, int& numero_de_linea_cedula){
+bool ValidacionUsuario(string nombre_del_archivo, int semilla, int& numero_de_linea_cedula, int longitud){
     string cedula;
     cedula= ValidarCedula_o_Saldo("la cedula");
     string linea;
@@ -293,6 +315,7 @@ bool ValidacionUsuario(string nombre_del_archivo, int semilla, int& numero_de_li
     for(int numero_linea_actual=1; numero_linea_actual<numero_lineas_del_archivo; numero_linea_actual+=3){
         linea= leerUnaLinea(numero_linea_actual, nombre_del_archivo);
         linea= decodificarM2(linea, semilla);
+        linea= quitarCeros(linea, longitud);
         linea= convBinInt(linea);
         if(linea==cedula){
             numero_de_linea_cedula=numero_linea_actual;
@@ -320,21 +343,53 @@ char VerificarTamaño(){
     return respuesta;
 }
 
-bool VerificarSaldo(int& saldo_entero, int numero_linea_deseada, string nombreArchivo, int semilla){
+bool VerificarSaldo(int& saldo_entero, int numero_linea_deseada, string nombreArchivo, int semilla, int longitud){
     string saldo_string=leerUnaLinea(numero_linea_deseada, nombreArchivo);
     saldo_string= decodificarM2(saldo_string, semilla);
-    saldo_string= quitarCeros(saldo_string);
+    saldo_string= quitarCeros(saldo_string, longitud);
     saldo_string= convBinInt(saldo_string);
     saldo_entero= stoi(saldo_string);
-    if(saldo_entero< 1000){
+    if(saldo_entero<= 1000){
         return false;
     }else{
         return true;
     }
 }
 
-void SobreEscribirUnaLinea(){
+string EncriptarNuevosValores(int valor, int semilla){
+    string version_string_saldo= to_string(valor);
+    int longitud = version_string_saldo.length();
+    string lineaBina= "";
+    for (int i = 0; i < longitud; i++) {
+        char aux[9];
+        convIntBin(aux, version_string_saldo[i]);
+        lineaBina+= aux;
+    }
+    version_string_saldo= codificarM2(lineaBina, semilla);
+    return version_string_saldo;
+}
 
+void ActualizarSaldo(int valorSaldo, string nombreArchivo, int linea_a_cambiar, int semilla){
+
+    ifstream archivo_lectura(nombreArchivo);
+    ofstream archivo_escritura("temp.txt");
+
+    string linea;
+    int contador=0;
+    string nueva_linea= EncriptarNuevosValores(valorSaldo, semilla);
+    while(getline(archivo_lectura, linea)){
+        if (contador == linea_a_cambiar){
+            archivo_escritura<<nueva_linea<<endl;
+        }else{
+            archivo_escritura<<linea<<endl;
+        }
+        contador++;
+    }
+    archivo_escritura.close();
+    archivo_lectura.close();
+
+    remove(nombreArchivo.c_str());
+    rename("temp.txt", nombreArchivo.c_str());
 }
 
 #endif // MENU_H

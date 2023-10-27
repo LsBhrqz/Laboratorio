@@ -6,9 +6,15 @@ int main()
 {
     bool bandera= false;
     string nombre_del_archivo= "sumo.txt";
-    int semilla_De_codificacion=4;
+    int semilla_De_codificacion=4; int longitud=4;
+    vector <int> longitudes_nombres_usuarios;
+    vector <int> longitudes_nombres_usuarios;
+    vector <int> longitudes_nombres_usuarios;
+    int longitud_clave_usuario=4;
+    int longitud_usuario=4;
+    int longitud_saldo=4;
 
-    ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion);
+    ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion, longitud);
 
     while(bandera){
         int eleccion_menu_ingreso=0;
@@ -30,7 +36,7 @@ int main()
                 bool bandera_menu_admin= true;
                 while(bandera_menu_admin){
                     cout << "Ingrese la contraseña"<<endl;
-                    bool verificacion_administrador= verificacionAdministrador(nombre_del_archivo, semilla_De_codificacion);
+                    bool verificacion_administrador= verificacionAdministrador(nombre_del_archivo, semilla_De_codificacion, longitud);
                     if(verificacion_administrador){
                         bool menu_interno_admin=true;
                         char respuesta_menu_admin = ' ';
@@ -48,7 +54,7 @@ int main()
                                 switch(respuesta_menu_admin){
                                 case '1':{
                                     cout<<"\nCreando usuario..."<<endl;
-                                    CrearUsuario(nombre_del_archivo, semilla_De_codificacion);
+                                    CrearUsuario(nombre_del_archivo, semilla_De_codificacion, longitud_usuario, longitud_clave_usuario, longitud_saldo);
                                 }
                                 break;
                                 case '2':
@@ -72,18 +78,24 @@ int main()
                 char salir_usuario=' ';
                 bool bandera_validacion_usuario= true;
                 int numero_de_linea_principal;
+                bool bandera_repetir_menu_usuario= false;
+
+
                 while(bandera_validacion_usuario){
-                    if(ValidacionUsuario(nombre_del_archivo, semilla_De_codificacion, numero_de_linea_principal)){
+                    if(ValidacionUsuario(nombre_del_archivo, semilla_De_codificacion, numero_de_linea_principal, longitud_usuario)){
                         bool validacion_clave_usuario=true;
                         while(validacion_clave_usuario){
                             string clave;
                             cout<<"Ingrese la clave: ";cin >> clave;
                             string clave_guardada= leerUnaLinea(numero_de_linea_principal+1, nombre_del_archivo);
                             clave_guardada= decodificarM2(clave_guardada, semilla_De_codificacion);
-                            clave_guardada= quitarCeros(clave_guardada);
+                            clave_guardada= quitarCeros(clave_guardada, longitud_clave_usuario);
                             clave_guardada= convBinInt(clave_guardada);
                             if(clave==clave_guardada){
+                                bandera_repetir_menu_usuario= true;;
                                 validacion_clave_usuario=false;
+                                bandera_validacion_usuario=false;
+
                             }else{
                                 cout<<"Clave incorrecta"<<endl;
                             }
@@ -93,24 +105,31 @@ int main()
 
                     }else{
                         cout<< "La cedula ingresada no se encuentra registrada. "<<endl;
-                        cout <<"Quiere volver a intentarlo? (s/n): ";
-                        salir_usuario= VerificarTamaño();
-                        switch(salir_usuario){
-                        case 's':{
-                        }
-                        break;
-                        case 'n':
-                            bandera_validacion_usuario=false;
+                        bool miban=true;
+                        while(miban){
+                            cout <<"Quiere volver a intentarlo? (s/n): ";
+                            salir_usuario= VerificarTamaño();
+                                switch(salir_usuario){
+                            case 's':{
+                                miban=false;
+                            }
                             break;
-                        default:
-                            cout << "\nIngresaste una opcion invalida" <<endl;
-                            cin.clear();
-                            cin.ignore(255, '\n');
-                            break;
+                            case 'n':
+                                bandera_validacion_usuario=false;
+                                miban=false;
+                                break;
+                            default:
+                                cout << "\nIngresaste una opcion invalida" <<endl;
+                                cin.clear();
+                                cin.ignore(255, '\n');
+                                break;
+                            }
+
                         }
                     }
                 }
-                bool bandera_repetir_menu_usuario= true;
+
+
                 while(bandera_repetir_menu_usuario){
                     cout << "\nSeleccione una opción: " <<endl;
                     cout << "1. Consultar saldo"<<endl;
@@ -127,13 +146,13 @@ int main()
                         switch(respuesta_menu_usuario){
                         case '1':{
                             int valorsaldo=0;
-                            bool verificacion_saldo= VerificarSaldo(valorsaldo, numero_de_linea_principal+2, nombre_del_archivo, semilla_De_codificacion);
+                            bool verificacion_saldo= VerificarSaldo(valorsaldo, numero_de_linea_principal+2, nombre_del_archivo, semilla_De_codificacion, longitud_saldo);
 
                             if(verificacion_saldo){
-                                cout << "\nSu saldo es de: " << valorsaldo << "pesos\n" <<endl;
+                                cout << "\nSu saldo es de: " << valorsaldo << " pesos\n" <<endl;
                                 cout <<"Se le cobraran 1000 pesos por consultar su saldo\n"<<endl;
                                 valorsaldo-= 1000;
-                                string saldo_actualizado= to_string(valorsaldo);
+                                ActualizarSaldo(valorsaldo, nombre_del_archivo, numero_de_linea_principal+2, semilla_De_codificacion);
                             }else{
                                 cout<<"Tiene menos de mil pesos, por lo tanto no puede consultar su saldo"<<endl;
                             }
@@ -145,7 +164,7 @@ int main()
                             break;
 
                         case '3':
-
+                            bandera_repetir_menu_usuario=false;
                             break;
                         default:
                             cout << "\nIngresaste una opcion invalida" <<endl;

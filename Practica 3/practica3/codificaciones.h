@@ -209,11 +209,9 @@ void codificarM1(string &cadena, int n){
 
 }
 
-string quitarCeros(string linea){
+string quitarCeros(string linea, int cantidad_bytes){
     string sincero = "";
-    int tam = (linea.length()) % 8;
-    int todo = linea.length() - tam;
-    sincero = linea.substr(0,todo);
+    sincero = linea.substr(0,8*cantidad_bytes);
 
     return sincero;
 }
