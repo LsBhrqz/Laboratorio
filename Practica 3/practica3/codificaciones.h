@@ -62,10 +62,6 @@ void decodificarM1(string cadena, int n){
         resultado += grupo;
         grupoAnterior = grupo;
     }
-
-    cout << "El archivo decodificado es: " << resultado;
-
-
 }
 
 //Esta función decodifica bajo el método dos
@@ -86,7 +82,6 @@ string decodificarM2(string cadena, int n){
         resultado += grupo;
     }
 
-    cout << "El archivo decodificado es: " << resultado << endl;
     return resultado;
 }
 
@@ -172,9 +167,6 @@ string codificarM2(string &cadena, int n){
 
         resultado += grupo;
     }
-
-    cout << "La contraseña codificada es: " << resultado << endl;
-
     return resultado;
 
 }
@@ -202,8 +194,6 @@ void codificarM1(string &cadena, int n){
     }
 
     resultado += "0";
-
-    cout << "El archivo codificado es: " << resultado << endl;
 
     decodificarM1(resultado, n);
 

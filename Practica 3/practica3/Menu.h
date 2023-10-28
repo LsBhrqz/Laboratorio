@@ -77,6 +77,47 @@ void EscribirContraseñasobreArchivo(string line, string nombreArchivo){
     archivo.close();
 }
 
+
+bool esNumero(string str){
+    for(char c : str){
+        if((c < '0') || (c > '9')){
+            return false;
+        }
+    }
+    return true;
+}
+
+int numeroLegal(){
+    string entrada;
+    bool entradaValida = false;
+    int numero = 0;
+
+    while(!entradaValida){
+        cout << "Ingrese la semilla de codificacion: ";
+                cin >> entrada;
+
+        entradaValida = esNumero(entrada);
+
+        if(entradaValida){
+            numero = 0;
+            for (char c : entrada){
+                numero = numero * 10 + (c - '0');
+            }
+
+            if(numero < 1){
+
+                entradaValida = false;
+            }
+        }
+
+        if(!entradaValida){
+            cout << "Entrada invalida. Por favor, ingrese un numero entero mayor o igual a 1." << endl;
+        }
+    }
+
+    return numero;
+}
+
 string CrearArhcivo(int& n, int &longitud){
     //Primera parte: Pedir una contraseña para el administrados y encriptarla
     string nombre_nuevo_archivo= "Nuevo archivo.txt";
@@ -96,8 +137,7 @@ string CrearArhcivo(int& n, int &longitud){
     cout << "La contraseña en binario es: " << lineaBin << endl;
 
 
-    cout << "Ingrese semilla de codificacion: ";
-    cin >> n;
+    n= numeroLegal();
 
     int tamaño= lineaBin.length();
     if(tamaño < n){
@@ -174,6 +214,14 @@ void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semil
 
 }
 
+bool VerificarNumeroPositivo( int numero){
+    if(numero<0){
+        return false;
+    }else{
+        return true;
+    }
+}
+
 bool cedulaRepetida(string nombre_del_archivo, string cedula_a_verificar){
     string linea;
     ifstream archivo;
@@ -193,6 +241,13 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>& longitud_ced
     ofstream archivo;
     string linea;
     long long int numero;
+    longitud_cedula.clear();
+    longitud_cedula.shrink_to_fit();
+    longitd_clave.clear();
+    longitd_clave.shrink_to_fit();
+    longitud_saldo.clear();
+    longitud_saldo.shrink_to_fit();
+
     archivo.open(nombre_archivo, ios::app);
     for(int i=0; i<3; i++){
         if(i==0){
@@ -203,25 +258,28 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>& longitud_ced
                     if(!(cin >> numero)){
                         throw 1;
                     }else{
-                        string version_string= to_string(numero);
-                        int longitud = version_string.length();
-                        longitud_cedula.push_back(longitud);
-                        string lineaBina= "";
-                        for (int i = 0; i < longitud; i++) {
-                            char aux[9];
-                            convIntBin(aux, version_string[i]);
-                            lineaBina+= aux;
-                        }
-
-                        version_string= ponerCeros(lineaBina, semilla);
-                        version_string= codificarM2(version_string, semilla);
-                        if(cedulaRepetida(nombre_archivo, version_string)){
-                            cout << "No se puede agregar esta cedula porque ya existe en el archivo" <<endl;
+                        if(numero<0){
+                            cout<<"Solo puede ingresar numeros positivos"<<endl;
                         }else{
-                            archivo << version_string<< endl;
-                            bandera=false;
-                        }
+                            string version_string= to_string(numero);
+                            int longitud = version_string.length();
+                            longitud_cedula.push_back(longitud);
+                            string lineaBina= "";
+                            for (int i = 0; i < longitud; i++) {
+                                char aux[9];
+                                convIntBin(aux, version_string[i]);
+                                lineaBina+= aux;
+                            }
 
+                            version_string= ponerCeros(lineaBina, semilla);
+                            version_string= codificarM2(version_string, semilla);
+                            if(cedulaRepetida(nombre_archivo, version_string)){
+                                cout << "No se puede agregar esta cedula porque ya existe en el archivo" <<endl;
+                            }else{
+                                archivo << version_string<< endl;
+                                bandera=false;
+                            }
+                        }
                     }
                 }catch(int error){
                     if(error==1){
@@ -252,19 +310,24 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>& longitud_ced
                     if(!(cin >> numero)){
                         throw 1;
                     }else{
-                        string version_string_saldo= to_string(numero);
-                        int longitud = version_string_saldo.length();
-                        longitud_saldo.push_back(longitud);
-                        string lineaBina= "";
-                        for (int i = 0; i < longitud; i++) {
-                            char aux[9];
-                            convIntBin(aux, version_string_saldo[i]);
-                            lineaBina+= aux;
+                        if(VerificarNumeroPositivo(numero)){
+                            string version_string_saldo= to_string(numero);
+                            int longitud = version_string_saldo.length();
+                            longitud_saldo.push_back(longitud);
+                            string lineaBina= "";
+                            for (int i = 0; i < longitud; i++) {
+                                char aux[9];
+                                convIntBin(aux, version_string_saldo[i]);
+                                lineaBina+= aux;
+                            }
+                            lineaBina= ponerCeros(lineaBina, semilla);
+                            version_string_saldo= codificarM2(lineaBina, semilla);
+                            archivo << version_string_saldo<< endl;
+                            bandera2=false;
+                        }else{
+                            cout<<"Solo puede ingresar numeros positivos"<<endl;
                         }
-                        lineaBina= ponerCeros(lineaBina, semilla);
-                        version_string_saldo= codificarM2(lineaBina, semilla);
-                        archivo << version_string_saldo<< endl;
-                        bandera2=false;
+
                     }
                 }catch(int error){
                     if(error==1){
@@ -290,8 +353,13 @@ string ValidarCedula_o_Saldo(string nombre){
             if(!(cin >> numero)){
                 throw 1;
             }else{
-                version_string= to_string(numero);
-                bandera=false;
+                if(VerificarNumeroPositivo(numero)){
+                    version_string= to_string(numero);
+                    bandera=false;
+                }else{
+                    cout<<"Solo puede ingresar numeros positivos"<<endl;
+                }
+
             }
         }catch(int error){
             if(error==1){
@@ -345,13 +413,26 @@ char VerificarTamaño(){
     return respuesta;
 }
 
+bool VerificarSaldoRetirar(int& saldo_entero, int numero_linea_deseada, string nombreArchivo, int semilla, int longitud, long long int cantidad_a_retirar){
+    string saldo_string=leerUnaLinea(numero_linea_deseada, nombreArchivo);
+    saldo_string= decodificarM2(saldo_string, semilla);
+    saldo_string= quitarCeros(saldo_string, longitud);
+    saldo_string= convBinInt(saldo_string);
+    saldo_entero= stoi(saldo_string);
+    if((saldo_entero-cantidad_a_retirar-1000)< 0){
+        return false;
+    }else{
+        return true;
+    }
+}
+
 bool VerificarSaldo(int& saldo_entero, int numero_linea_deseada, string nombreArchivo, int semilla, int longitud){
     string saldo_string=leerUnaLinea(numero_linea_deseada, nombreArchivo);
     saldo_string= decodificarM2(saldo_string, semilla);
     saldo_string= quitarCeros(saldo_string, longitud);
     saldo_string= convBinInt(saldo_string);
     saldo_entero= stoi(saldo_string);
-    if(saldo_entero<= 1000){
+    if(saldo_entero< 1000){
         return false;
     }else{
         return true;

@@ -5,11 +5,11 @@ using namespace std;
 int main()
 {
     bool bandera= false;
-    string nombre_del_archivo= "sumo.txt";
+    string nombre_del_archivo= "sudo.txt";
     int semilla_De_codificacion=4; int longitud=4;
-    vector <int> longitudes_cedula_usuarios={};
-    vector <int> longitudes_claves_usuarios={};
-    vector <int> longitudes_saldos_usuarios={};
+    vector <int> longitudes_cedula_usuarios={10,7};
+    vector <int> longitudes_claves_usuarios={8, 8};
+    vector <int> longitudes_saldos_usuarios={5, 4};
     int posicion_archivo_usuario=0;
 
     ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion, longitud);
@@ -156,7 +156,27 @@ int main()
 
                         }
                             break;
-                        case '2':
+                        case '2':{
+                            long long int cantidad_a_retirar= stoi(ValidarCedula_o_Saldo("la cantidad a retirar"));
+                            int valorsaldo=0;
+
+                            bool verificacion_saldo= VerificarSaldoRetirar(valorsaldo, numero_de_linea_principal+2, nombre_del_archivo, semilla_De_codificacion, longitudes_saldos_usuarios[posicion_archivo_usuario], cantidad_a_retirar);
+                            if(verificacion_saldo){
+                                valorsaldo-= cantidad_a_retirar;
+                                cout << "\nSu saldo es de: " << valorsaldo << " pesos\n" <<endl;
+                                cout <<"Se le cobraran 1000 pesos por retirar\n"<<endl;
+                                valorsaldo-=1000;
+                                ActualizarSaldo(valorsaldo, nombre_del_archivo, numero_de_linea_principal+2, semilla_De_codificacion, longitudes_saldos_usuarios, posicion_archivo_usuario);
+                            }else{
+                                if(valorsaldo<1000){
+                                    cout<<"Tiene menos de mil pesos, por lo tanto no puedes retirar"<<endl;
+                                }else if(cantidad_a_retirar>valorsaldo){
+                                    cout<<"No tiene suficiente saldo"<<endl;
+                                }else{
+                                    cout<<"No puede retirar esta cantidad, tenga en cuenta los 1000 pesos que se le cobraran despues de retirar"<<endl;
+                                }
+                            }
+                        }
 
                             break;
 
