@@ -57,7 +57,7 @@ string ponerCeros(string lineaBinString, int n){
 
 
 bool verificacionAdministrador(string nombreArchivo, int semilla_de_codificacion, int longitud){
-    string contraseña_ingresada =" ";
+    string contraseña_ingresada = " ";
     string contraseña_guardada= leerUnaLinea(0, nombreArchivo);
     cin >> contraseña_ingresada;
     contraseña_guardada= decodificarM2(contraseña_guardada, semilla_de_codificacion);
@@ -118,7 +118,7 @@ int numeroLegal(){
     return numero;
 }
 
-string CrearArhcivo(int& n, int &longitud){
+string CrearArhcivo(int& n, int &longitud, vector<int>& longitud_cedula, vector<int>& longitd_clave, vector<int>& longitud_saldo){
     //Primera parte: Pedir una contraseña para el administrados y encriptarla
     string nombre_nuevo_archivo= "Nuevo archivo.txt";
     string lecturaConsola = "";
@@ -134,10 +134,10 @@ string CrearArhcivo(int& n, int &longitud){
         lineaBin+= aux;
     }
 
-    cout << "La contraseña en binario es: " << lineaBin << endl;
+    //cout << "La contraseña en binario es: " << lineaBin << endl;
 
 
-    n= numeroLegal();
+    n = numeroLegal();
 
     int tamaño= lineaBin.length();
     if(tamaño < n){
@@ -156,10 +156,17 @@ string CrearArhcivo(int& n, int &longitud){
 
     EscribirContraseñasobreArchivo(contraseña_encriptada, nombre_nuevo_archivo);
 
+    longitud_cedula.clear();
+    longitud_cedula.shrink_to_fit();
+    longitd_clave.clear();
+    longitd_clave.shrink_to_fit();
+    longitud_saldo.clear();
+    longitud_saldo.shrink_to_fit();
+
     return nombre_nuevo_archivo;
 }
 
-void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semilla, int& longitud){
+void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semilla, int& longitud, vector<int>& longitud_cedula, vector<int>& longitd_clave, vector<int>& longitud_saldo){
     bool inicio= true;
     char respuesta= ' ';
     string verificar_tamaño= "";
@@ -178,7 +185,7 @@ void ComprobacionDeArchivo(string& nombre_del_archivo, bool& bandera, int &semil
                 respuesta= verificar_tamaño[0];
                 switch(respuesta){
                 case 's':
-                    nombre_del_archivo = CrearArhcivo(semilla, longitud);
+                    nombre_del_archivo = CrearArhcivo(semilla, longitud, longitud_cedula, longitd_clave, longitud_saldo);
                     break;
                 case 'n':
                 {
@@ -241,12 +248,6 @@ void CrearUsuario(string nombre_archivo, int& semilla, vector<int>& longitud_ced
     ofstream archivo;
     string linea;
     long long int numero;
-    longitud_cedula.clear();
-    longitud_cedula.shrink_to_fit();
-    longitd_clave.clear();
-    longitd_clave.shrink_to_fit();
-    longitud_saldo.clear();
-    longitud_saldo.shrink_to_fit();
 
     archivo.open(nombre_archivo, ios::app);
     for(int i=0; i<3; i++){

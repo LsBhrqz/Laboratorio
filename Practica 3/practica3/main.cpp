@@ -12,7 +12,7 @@ int main()
     vector <int> longitudes_saldos_usuarios={5, 4};
     int posicion_archivo_usuario=0;
 
-    ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion, longitud);
+    ComprobacionDeArchivo(nombre_del_archivo, bandera, semilla_De_codificacion, longitud, longitudes_cedula_usuarios, longitudes_claves_usuarios, longitudes_saldos_usuarios);
 
     while(bandera){
         int eleccion_menu_ingreso=0;
@@ -78,10 +78,11 @@ int main()
                 int numero_de_linea_principal;
                 bool bandera_repetir_menu_usuario= false;
 
-
                 while(bandera_validacion_usuario){
+
                     if(ValidacionUsuario(nombre_del_archivo, semilla_De_codificacion, numero_de_linea_principal, longitudes_cedula_usuarios, posicion_archivo_usuario)){
                         bool validacion_clave_usuario=true;
+
                         while(validacion_clave_usuario){
                             string clave;
                             cout<<"Ingrese la clave: ";cin >> clave;
@@ -98,8 +99,6 @@ int main()
                                 cout<<"Clave incorrecta"<<endl;
                             }
                         }
-
-
 
                     }else{
                         cout<< "La cedula ingresada no se encuentra registrada. "<<endl;
