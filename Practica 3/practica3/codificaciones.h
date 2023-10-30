@@ -62,6 +62,7 @@ void decodificarM1(string &cadena, int n){
         resultado += grupo;
         grupoAnterior = grupo;
     }
+    cadena = resultado;
 }
 
 //Esta función decodifica bajo el método dos
@@ -192,7 +193,7 @@ void codificarM1(string &cadena, int n){
         resultado += grupo;
         grupoAnterior = cadena.substr(i,n);
     }
-
+    cadena = resultado;
 }
 
 string quitarCeros(string linea, int cantidad_bytes){

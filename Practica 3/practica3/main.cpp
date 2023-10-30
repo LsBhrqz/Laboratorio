@@ -1,7 +1,7 @@
 #include "Menu.h"
 
 using namespace std;
-
+/*
 int main()
 {
     bool bandera= false;
@@ -214,9 +214,9 @@ int main()
     return 0;
 }
 
+*/
 
 
-/*
 int main(){
     string prueba; cout<<"Ingrese la cadena a codificar: "; getline(cin, prueba);
 
@@ -253,4 +253,5 @@ int main(){
     final = convBinInt(lineaBin); cout<<"Linea original en bytes: "<< lineaBin<<endl;
     cout<<"Linea original: "<< final<<endl;
 }
-*/
+
+
